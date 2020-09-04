@@ -1,36 +1,69 @@
 const createLogger = require('./logger.js');
+const { generateToken } = require('./token');
+const { getSuccessResponse, getErrorResponse, getFailResponse } = require('./responses');
 
-const getResponse = (statusCode, messageTemplate) => message => {
-    const stringyfiedMessage = (typeof message === 'string')
-        ? message
-        : JSON.stringify(message);
+function handleLoginApi(log, requestBody) {
+    const credentials = {
+        'bernhard.riemann': '1866',
+        'alan.turing': '1954',
+    };
 
-    return {
-        statusCode: statusCode ,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: messageTemplate.replace('__MESSAGE__', stringyfiedMessage)
-    }
-};
-
-const getErrorResponse = getResponse(500, '{ message: "__MESSAGE__" }');
-const getSuccessResponse = getResponse(200, '__MESSAGE__');
-
-async function handler(event, context, callback) {
-    let data = [];
-    const log = createLogger();
-
-    log.info('New Request')
+    let isAuthorized = false;
+    let body = {};
 
     try {
-        // TODO: do something
-    } catch (error) {
-        log.error(error.toString())
-        return callback(null, getErrorResponse(error));
+        body = JSON.parse(requestBody);
+        if (credentials[body.username] === body.password) {
+            isAuthorized = true;
+        }
+    } catch (err) {
+        log.error('An error occurred while parsing body request');
     }
 
-    callback(null, getSuccessResponse(data))
+    if (!isAuthorized) {
+        const message = 'Sorry, your credentials are not valid';
+        log.error(message);
+        return getFailResponse(401, { message });
+    }
+
+    const token = generateToken(body.username);
+    return getSuccessResponse(200, { token });
+}
+
+function handleValidateApi() {
+
+}
+
+function handleMyMusicApi() {
+
+}
+
+
+async function handler(event, context, callback) {
+    const log = createLogger();
+    const { path, body } = event;
+    log.info(`New request at path ${path}`);
+
+    const apiType = path ? path.replace('/api/', '') : '';
+
+    let response = {};
+    switch (apiType) {
+        case 'login':
+            response = handleLoginApi(log, body);
+            break;
+        case 'validate':
+            response = handleValidateApi(log);
+            break;
+        case 'mymusic':
+            response = handleMyMusicApi(log);
+            break;
+        default:
+            const message = `Sorry, I don't recognise the url: ${path}`;
+            log.error(message);
+            response = getFailResponse(404, { message });
+    }
+
+    callback(null, response)
 }
 
 exports.handler = handler;
