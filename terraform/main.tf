@@ -15,7 +15,7 @@ variable "aws_region" {
 provider "aws" {
   region  = var.aws_region
   profile = "personal"
-  version = "~> 2.43"
+  version = "~> 3.0"
 }
 
 # data "terraform_remote_state" "network" {
