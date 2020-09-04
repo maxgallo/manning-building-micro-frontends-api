@@ -93,5 +93,13 @@ const apiValidateEvent = {
 }
 apiValidateEvent.headers.Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlcm5oYXJkLnJpZW1hbm4iLCJpYXQiOjE1OTkyNTEwODB9.q_77XA5N-ioLkhuqRyMi8PbYzYQirg4BoT1PX9dVr9w';
 
+const apiSongsEvent = {
+    ...JSON.parse(JSON.stringify(apiLoginEvent)),
+    resource: '/api/songs',
+    path: '/api/songs',
+}
+apiSongsEvent.headers.Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlcm5oYXJkLnJpZW1hbm4iLCJpYXQiOjE1OTkyNTEwODB9.q_77XA5N-ioLkhuqRyMi8PbYzYQirg4BoT1PX9dVr9w';
+
 // lambda.handler(apiLoginEvent, {}, callback);
-lambda.handler(apiValidateEvent, {}, callback);
+// lambda.handler(apiValidateEvent, {}, callback);
+lambda.handler(apiSongsEvent, {}, callback);

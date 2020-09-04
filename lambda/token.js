@@ -9,13 +9,14 @@ function generateToken(username) {
 }
 
 function validateToken(token) {
+    let decodedToken;
     try {
-        jwt.verify(token, NOT_SO_SECRET);
+        decodedToken = jwt.verify(token, NOT_SO_SECRET);
     } catch(err) {
-        return false;
+        return null;
     }
 
-    return true;
+    return decodedToken;
 }
 
 module.exports = {
