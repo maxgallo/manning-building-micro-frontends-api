@@ -1,6 +1,6 @@
 const credentials = {
     'alan.turing': '1954',
-    'bernhard.riemann': '1955',
+    'bernhard.riemann': '1866',
     'david.hilbert': '1943',
     'isaac.newton': '1727',
 };
