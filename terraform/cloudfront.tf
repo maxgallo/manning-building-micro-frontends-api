@@ -32,8 +32,8 @@ resource "aws_cloudfront_distribution" "building_mfe" {
   price_class     = "PriceClass_100"
 
   default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    allowed_methods  = ["GET", "POST", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "POST", "HEAD", "OPTIONS"]
     target_origin_id = local.api_gateway_origin_id
 
     forwarded_values {
