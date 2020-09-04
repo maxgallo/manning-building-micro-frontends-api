@@ -23,17 +23,17 @@ resource "aws_api_gateway_method" "post_login" {
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_method_settings" "post_login_settings" {
-  rest_api_id = aws_api_gateway_rest_api.building_mfe.id
-  stage_name  = aws_api_gateway_stage.building_mfe.stage_name
-  method_path = "${aws_api_gateway_resource.login.path_part}/${aws_api_gateway_method.login.http_method}"
+# resource "aws_api_gateway_method_settings" "post_login_settings" {
+  # rest_api_id = aws_api_gateway_rest_api.building_mfe.id
+  # stage_name  = aws_api_gateway_stage.building_mfe.stage_name
+  # method_path = "${aws_api_gateway_resource.login.path_part}/${aws_api_gateway_method.login.http_method}"
 
-  settings {
-    metrics_enabled = true
-    # logging_level        = "INFO"
-    caching_enabled = false
-  }
-}
+  # settings {
+    # metrics_enabled = true
+    # # logging_level        = "INFO"
+    # caching_enabled = false
+  # }
+# }
 
 resource "aws_api_gateway_integration" "post_login_integration" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
@@ -59,17 +59,17 @@ resource "aws_api_gateway_method" "post_validate" {
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_method_settings" "post_validate_settings" {
-  rest_api_id = aws_api_gateway_rest_api.building_mfe.id
-  stage_name  = aws_api_gateway_stage.building_mfe.stage_name
-  method_path = "${aws_api_gateway_resource.validate.path_part}/${aws_api_gateway_method.validate.http_method}"
+# resource "aws_api_gateway_method_settings" "post_validate_settings" {
+  # rest_api_id = aws_api_gateway_rest_api.building_mfe.id
+  # stage_name  = aws_api_gateway_stage.building_mfe.stage_name
+  # method_path = "${aws_api_gateway_resource.validate.path_part}/${aws_api_gateway_method.validate.http_method}"
 
-  settings {
-    metrics_enabled = true
-    # logging_level        = "INFO"
-    caching_enabled = false
-  }
-}
+  # settings {
+    # metrics_enabled = true
+    # # logging_level        = "INFO"
+    # caching_enabled = false
+  # }
+# }
 
 resource "aws_api_gateway_integration" "post_validate_integration" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
@@ -96,17 +96,17 @@ resource "aws_api_gateway_method" "get_songs" {
   authorization = "NONE"
 }
 
-resource "aws_api_gateway_method_settings" "get_songs_settings" {
-  rest_api_id = aws_api_gateway_rest_api.building_mfe.id
-  stage_name  = aws_api_gateway_stage.building_mfe.stage_name
-  method_path = "${aws_api_gateway_resource.songs.path_part}/${aws_api_gateway_method.songs.http_method}"
+# resource "aws_api_gateway_method_settings" "get_songs_settings" {
+  # rest_api_id = aws_api_gateway_rest_api.building_mfe.id
+  # stage_name  = aws_api_gateway_stage.building_mfe.stage_name
+  # method_path = "${aws_api_gateway_resource.songs.path_part}/${aws_api_gateway_method.songs.http_method}"
 
-  settings {
-    metrics_enabled = true
-    # logging_level        = "INFO"
-    caching_enabled = false
-  }
-}
+  # settings {
+    # metrics_enabled = true
+    # # logging_level        = "INFO"
+    # caching_enabled = false
+  # }
+# }
 
 resource "aws_api_gateway_integration" "get_songs_integration" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
@@ -121,7 +121,7 @@ resource "aws_api_gateway_integration" "get_songs_integration" {
 // end of APIs
 
 resource "aws_api_gateway_deployment" "building_mfe" {
-  depends_on = [aws_api_gateway_integration.lambda_integration]
+  depends_on = [aws_api_gateway_integration.post_validate_integration, aws_api_gateway_integration.get_songs_integration, aws_api_gateway_integration.post_login_integration]
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
 
   stage_name = "v1"
