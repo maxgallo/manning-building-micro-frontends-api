@@ -1,0 +1,18 @@
+function.zip
+functiontelegram.zip
+node_modules
+
+# Terraform
+
+.terraform/
+tfplan
+tfplan.*
+terraform.tfstate.backup
+debug.log
+
+
+# Vim
+
+*.swp
+
+
