@@ -8,7 +8,7 @@ resource "aws_cloudfront_distribution" "building_mfe" {
   origin {
     domain_name = local.api_gateway_invoke_domain
     origin_id   = local.api_gateway_origin_id
-    origin_path = "/${aws_api_gateway_stage.waiting_times.stage_name}"
+    origin_path = "/${aws_api_gateway_stage.building_mfe.stage_name}"
 
     custom_origin_config {
       origin_protocol_policy = "https-only"

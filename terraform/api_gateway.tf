@@ -4,7 +4,7 @@ resource "aws_api_gateway_rest_api" "building_mfe" {
 }
 
 resource "aws_api_gateway_stage" "building_mfe" {
-  stage_name    = "production"
+  stage_name    = "v1"
   rest_api_id   = aws_api_gateway_rest_api.building_mfe.id
   deployment_id = aws_api_gateway_deployment.building_mfe.id
 }
@@ -124,11 +124,7 @@ resource "aws_api_gateway_deployment" "building_mfe" {
   depends_on = [aws_api_gateway_integration.lambda_integration]
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
 
-  # In theory this one should be irrelevant and the one
-  # from aws_api_gateway_stage.building_mfe should be used
-  # but since it doesn't work (it always uses this one and ignore the other)
-  # I'm keeping them the same string
-  stage_name = "production"
+  stage_name = "v1"
 }
 
 # resource "aws_api_gateway_domain_name" "emergency_room" {
