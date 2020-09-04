@@ -1,25 +1,17 @@
 const { getSuccessResponse, getFailResponse } = require('./responses');
 const { generateToken, validateToken } = require('./token');
+const { credentials, userSongs } = require('./users');
 
 function handleLoginApi(log, requestBody) {
-    const credentials = {
-        'bernhard.riemann': '1866',
-        'alan.turing': '1954',
-    };
-
-    let isAuthorized = false;
     let body = {};
 
     try {
         body = JSON.parse(requestBody);
-        if (credentials[body.username] === body.password) {
-            isAuthorized = true;
-        }
     } catch (err) {
         log.error('An error occurred while parsing body request');
     }
 
-    if (!isAuthorized) {
+    if (credentials[body.username] !== body.password) {
         const message = 'Sorry, your credentials are not valid';
         log.error(message);
         return getFailResponse(401, { message });
@@ -71,9 +63,9 @@ function handleSongsApi(log, headers) {
     if (error) {
         return error;
     }
-    // TODO: return songs
-    console.log(decodedToken);
-    return getSuccessResponse(200, { songs: [] })
+
+    const songs = userSongs[decodedToken.username] || [];
+    return getSuccessResponse(200, { songs })
 }
 
 module.exports = {
