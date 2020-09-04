@@ -4,16 +4,22 @@ resource "aws_api_gateway_rest_api" "building_mfe" {
 }
 
 resource "aws_api_gateway_stage" "building_mfe" {
-  stage_name    = "v1"
+  stage_name    = "production"
   rest_api_id   = aws_api_gateway_rest_api.building_mfe.id
   deployment_id = aws_api_gateway_deployment.building_mfe.id
+}
+
+resource "aws_api_gateway_resource" "api" {
+  rest_api_id = aws_api_gateway_rest_api.building_mfe.id
+  parent_id   = aws_api_gateway_rest_api.building_mfe.root_resource_id
+  path_part   = "api"
 }
 
 // 1 of 3: Login
 resource "aws_api_gateway_resource" "login" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
-  parent_id   = aws_api_gateway_rest_api.building_mfe.root_resource_id
-  path_part   = "api/login"
+  parent_id   = aws_api_gateway_resource.api.id
+  path_part   = "login"
 }
 
 resource "aws_api_gateway_method" "post_login" {
@@ -48,8 +54,8 @@ resource "aws_api_gateway_integration" "post_login_integration" {
 // 2 of 3 - Validate Token
 resource "aws_api_gateway_resource" "validate" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
-  parent_id   = aws_api_gateway_rest_api.building_mfe.root_resource_id
-  path_part   = "api/validate"
+  parent_id   = aws_api_gateway_resource.api.id
+  path_part   = "validate"
 }
 
 resource "aws_api_gateway_method" "post_validate" {
@@ -85,8 +91,8 @@ resource "aws_api_gateway_integration" "post_validate_integration" {
 // 3 of 3: Songs
 resource "aws_api_gateway_resource" "songs" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
-  parent_id   = aws_api_gateway_rest_api.building_mfe.root_resource_id
-  path_part   = "api/mymusic"
+  parent_id   = aws_api_gateway_resource.api.id
+  path_part   = "mymusic"
 }
 
 resource "aws_api_gateway_method" "get_songs" {
@@ -124,7 +130,7 @@ resource "aws_api_gateway_deployment" "building_mfe" {
   depends_on = [aws_api_gateway_integration.post_validate_integration, aws_api_gateway_integration.get_songs_integration, aws_api_gateway_integration.post_login_integration]
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
 
-  stage_name = "v1"
+  stage_name = "production"
 }
 
 # resource "aws_api_gateway_domain_name" "emergency_room" {
