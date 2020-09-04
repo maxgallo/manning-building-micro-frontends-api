@@ -1,5 +1,5 @@
 const createLogger = require('./logger.js');
-const { generateToken } = require('./token');
+const { generateToken, validateToken } = require('./token');
 const { getSuccessResponse, getErrorResponse, getFailResponse } = require('./responses');
 
 function handleLoginApi(log, requestBody) {
@@ -30,8 +30,41 @@ function handleLoginApi(log, requestBody) {
     return getSuccessResponse(200, { token });
 }
 
-function handleValidateApi() {
+function validateRequest(log, headers) {
+    if (!headers || !headers.Authorization) {
+        const message = 'Missing Authorization header';
+        log.error(message)
+        return getFailResponse(401, { message });
+    }
 
+    const tokenRegex = /bearer\s(.*)/i;
+    let token;
+    try {
+        [, token] = headers.Authorization.match(tokenRegex);
+    } catch(e) {
+        const message = 'An error occurred while parsing the Authorization header';
+        log.error(message)
+        return getFailResponse(401, { message })
+    }
+
+    const isTokenValid = validateToken(token);
+
+    if (!isTokenValid) {
+        const message = 'JWT token is not valid';
+        log.error(message)
+        return getFailResponse(401, { message })
+    }
+
+    return null;
+}
+
+function handleValidateApi(log, headers) {
+    const error = validateRequest(log, headers);
+    if (error) {
+        return error;
+    }
+
+    return getSuccessResponse(200, {});
 }
 
 function handleMyMusicApi() {
@@ -41,7 +74,7 @@ function handleMyMusicApi() {
 
 async function handler(event, context, callback) {
     const log = createLogger();
-    const { path, body } = event;
+    const { path, body, headers } = event;
     log.info(`New request at path ${path}`);
 
     const apiType = path ? path.replace('/api/', '') : '';
@@ -52,7 +85,7 @@ async function handler(event, context, callback) {
             response = handleLoginApi(log, body);
             break;
         case 'validate':
-            response = handleValidateApi(log);
+            response = handleValidateApi(log, headers);
             break;
         case 'mymusic':
             response = handleMyMusicApi(log);

@@ -4,7 +4,7 @@ function callback(error, response) {
     console.log(response);
 }
 
-const exampleEvent = {
+const apiLoginEvent = {
     resource: '/api/login',
     path: '/api/login',
     httpMethod: 'POST',
@@ -86,4 +86,12 @@ const exampleEvent = {
     isBase64Encoded: false
 }
 
-lambda.handler(exampleEvent, {}, callback);
+const apiValidateEvent = {
+    ...JSON.parse(JSON.stringify(apiLoginEvent)),
+    resource: '/api/validate',
+    path: '/api/validate',
+}
+apiValidateEvent.headers.Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlcm5oYXJkLnJpZW1hbm4iLCJpYXQiOjE1OTkyNTEwODB9.q_77XA5N-ioLkhuqRyMi8PbYzYQirg4BoT1PX9dVr9w';
+
+// lambda.handler(apiLoginEvent, {}, callback);
+lambda.handler(apiValidateEvent, {}, callback);
