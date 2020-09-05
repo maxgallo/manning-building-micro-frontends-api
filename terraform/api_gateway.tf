@@ -3,12 +3,6 @@ resource "aws_api_gateway_rest_api" "building_mfe" {
   description = "Manning liveProject Building Microfrontend API"
 }
 
-resource "aws_api_gateway_stage" "building_mfe" {
-  stage_name    = "production"
-  rest_api_id   = aws_api_gateway_rest_api.building_mfe.id
-  deployment_id = aws_api_gateway_deployment.building_mfe.id
-}
-
 resource "aws_api_gateway_resource" "api" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
   parent_id   = aws_api_gateway_rest_api.building_mfe.root_resource_id
@@ -28,18 +22,6 @@ resource "aws_api_gateway_method" "post_login" {
   http_method   = "POST"
   authorization = "NONE"
 }
-
-# resource "aws_api_gateway_method_settings" "post_login_settings" {
-  # rest_api_id = aws_api_gateway_rest_api.building_mfe.id
-  # stage_name  = aws_api_gateway_stage.building_mfe.stage_name
-  # method_path = "${aws_api_gateway_resource.login.path_part}/${aws_api_gateway_method.login.http_method}"
-
-  # settings {
-    # metrics_enabled = true
-    # # logging_level        = "INFO"
-    # caching_enabled = false
-  # }
-# }
 
 resource "aws_api_gateway_integration" "post_login_integration" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
@@ -64,18 +46,6 @@ resource "aws_api_gateway_method" "post_validate" {
   http_method   = "POST"
   authorization = "NONE"
 }
-
-# resource "aws_api_gateway_method_settings" "post_validate_settings" {
-  # rest_api_id = aws_api_gateway_rest_api.building_mfe.id
-  # stage_name  = aws_api_gateway_stage.building_mfe.stage_name
-  # method_path = "${aws_api_gateway_resource.validate.path_part}/${aws_api_gateway_method.validate.http_method}"
-
-  # settings {
-    # metrics_enabled = true
-    # # logging_level        = "INFO"
-    # caching_enabled = false
-  # }
-# }
 
 resource "aws_api_gateway_integration" "post_validate_integration" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
@@ -102,18 +72,6 @@ resource "aws_api_gateway_method" "get_songs" {
   authorization = "NONE"
 }
 
-# resource "aws_api_gateway_method_settings" "get_songs_settings" {
-  # rest_api_id = aws_api_gateway_rest_api.building_mfe.id
-  # stage_name  = aws_api_gateway_stage.building_mfe.stage_name
-  # method_path = "${aws_api_gateway_resource.songs.path_part}/${aws_api_gateway_method.songs.http_method}"
-
-  # settings {
-    # metrics_enabled = true
-    # # logging_level        = "INFO"
-    # caching_enabled = false
-  # }
-# }
-
 resource "aws_api_gateway_integration" "get_songs_integration" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
   resource_id = aws_api_gateway_method.get_songs.resource_id
@@ -123,31 +81,32 @@ resource "aws_api_gateway_integration" "get_songs_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
 }
-
 // end of APIs
 
+// A note on "deployment and stage"
+//
+// As Sept 2020 there are some long-lasting issue "Stage already exists"
+// The sequence that I think works is
+// 1. terraform apply
+// 2. manually delete "production" in console
+// 3. run agin terraform apply
+
+// Create a deployment of a specific stage
 resource "aws_api_gateway_deployment" "building_mfe" {
-  depends_on = [aws_api_gateway_integration.post_validate_integration, aws_api_gateway_integration.get_songs_integration, aws_api_gateway_integration.post_login_integration]
+  depends_on  = [aws_api_gateway_integration.post_validate_integration, aws_api_gateway_integration.get_songs_integration, aws_api_gateway_integration.post_login_integration]
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
 
   stage_name = "production"
+  triggers = {
+    redeployment = md5(file("api_gateway.tf"))
+  }
 }
-
-# resource "aws_api_gateway_domain_name" "emergency_room" {
-# domain_name     = "er.maxgallo.io"
-# certificate_arn = "arn:aws:acm:us-east-1:708961971619:certificate/051d4a2d-dee6-40d2-a545-a6fcf0dc76b0"
-# }
-
-# resource "aws_route53_record" "standings" {
-# zone_id = "${data.aws_route53_zone.public_zone.id}"
-# name = "${local.external_address}"
-# type = "A"
-# alias {
-# name = "${aws_cloudfront_distribution.standings.domain_name}"
-# zone_id = "${aws_cloudfront_distribution.standings.hosted_zone_id}"
-# evaluate_target_health = false
-# }
-# }
+// Create a stage, used in the deployment above
+resource "aws_api_gateway_stage" "building_mfe" {
+  stage_name    = "production"
+  rest_api_id   = aws_api_gateway_rest_api.building_mfe.id
+  deployment_id = aws_api_gateway_deployment.building_mfe.id
+}
 
 output "base_url" {
   value = aws_api_gateway_deployment.building_mfe.invoke_url

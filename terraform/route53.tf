@@ -1,7 +1,10 @@
-resource "aws_route53_record" "buildingmfe_maxgallo_io" {
-  zone_id = "Z37AACCBRYV3CJ" // maxgallo.io
+data "aws_route53_zone" "maxgallo_io" {
+  name = "maxgallo.io"
+}
 
-  # name    = "${aws_api_gateway_domain_name.emergency_room.domain_name}"
+resource "aws_route53_record" "buildingmfe_maxgallo_io" {
+  zone_id = data.aws_route53_zone.maxgallo_io.zone_id
+
   name = local.public_domain
   type = "A"
 
