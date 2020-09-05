@@ -11,8 +11,14 @@ function handleLoginApi(log, requestBody) {
         log.error('An error occurred while parsing body request');
     }
 
+    if (!body.username || !body.password) {
+        const message = 'I wasn\'t able to find credentials in the body';
+        log.error(message);
+        return getFailResponse(401, { message });
+    }
+
     if (credentials[body.username] !== body.password) {
-        const message = 'Sorry, your credentials are not valid';
+        const message = 'Sorry, the credentials are not valid';
         log.error(message);
         return getFailResponse(401, { message });
     }
