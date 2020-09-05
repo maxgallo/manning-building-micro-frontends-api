@@ -63,11 +63,12 @@ function handleSongsApi(log, headers) {
     if (error) {
         return error;
     }
+    const { data: {username} } = decodedToken;
 
-    const songs = userSongs[decodedToken.username] || [];
+    const songs = userSongs[username] || [];
 
     if (songs.length <= 0) {
-        log.info(`No songs found for user: "${decodedToken.username}"`)
+        log.info(`No songs found for user: "${username}"`)
     }
     return getSuccessResponse(200, { songs })
 }

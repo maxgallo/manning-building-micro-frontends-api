@@ -98,7 +98,8 @@ const apiSongsEvent = {
     resource: '/api/songs',
     path: '/api/songs',
 }
-apiSongsEvent.headers.Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlcm5oYXJkLnJpZW1hbm4iLCJpYXQiOjE1OTkyNTEwODB9.q_77XA5N-ioLkhuqRyMi8PbYzYQirg4BoT1PX9dVr9w';
+// apiSongsEvent.headers.Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImJlcm5oYXJkLnJpZW1hbm4iLCJpYXQiOjE1OTkyNTEwODB9.q_77XA5N-ioLkhuqRyMi8PbYzYQirg4BoT1PX9dVr9w';
+apiSongsEvent.headers.Authorization = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InVzZXJuYW1lIjoiYmVybmhhcmQucmllbWFubiJ9LCJpYXQiOjE1OTkzMDcxMzAsImV4cCI6MTU5OTM5MzUzMH0.IVKD0PFG5V0CAYCyOWVuf_JFm3qXxDSVKKldQZrbIaA';
 
 // lambda.handler(apiLoginEvent, {}, callback);
 // lambda.handler(apiValidateEvent, {}, callback);
