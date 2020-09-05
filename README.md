@@ -107,7 +107,7 @@ cd lambda
 npm install
 ```
 
-Init terraform
+Init terraform and install modules
 ```bash
 cd terraform
 terraform init

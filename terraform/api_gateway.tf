@@ -33,6 +33,15 @@ resource "aws_api_gateway_integration" "post_login_integration" {
   type                    = "AWS_PROXY"
 }
 
+// https://github.com/squidfunk/terraform-aws-api-gateway-enable-cors
+module "login_cors" {
+  source = "squidfunk/api-gateway-enable-cors/aws"
+  version = "0.3.1"
+
+  api_id          = aws_api_gateway_rest_api.building_mfe.id
+  api_resource_id = aws_api_gateway_resource.login.id
+}
+
 // 2 of 3 - Validate Token
 resource "aws_api_gateway_resource" "validate" {
   rest_api_id = aws_api_gateway_rest_api.building_mfe.id
@@ -57,6 +66,13 @@ resource "aws_api_gateway_integration" "post_validate_integration" {
   type                    = "AWS_PROXY"
 }
 
+module "validate_cors" {
+  source = "squidfunk/api-gateway-enable-cors/aws"
+  version = "0.3.1"
+
+  api_id          = aws_api_gateway_rest_api.building_mfe.id
+  api_resource_id = aws_api_gateway_resource.validate.id
+}
 
 // 3 of 3: Songs
 resource "aws_api_gateway_resource" "songs" {
@@ -81,7 +97,16 @@ resource "aws_api_gateway_integration" "get_songs_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
 }
+
+module "songs_cors" {
+  source = "squidfunk/api-gateway-enable-cors/aws"
+  version = "0.3.1"
+
+  api_id          = aws_api_gateway_rest_api.building_mfe.id
+  api_resource_id = aws_api_gateway_resource.songs.id
+}
 // end of APIs
+
 
 // A note on "deployment and stage"
 //

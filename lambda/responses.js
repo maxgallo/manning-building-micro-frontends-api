@@ -1,5 +1,13 @@
-// implementing ~jsend https://github.com/omniti-labs/jsend
+function getHeaders(additionalHeaders) {
+    return {
+        'Access-Control-Allow-Origin': '*',
+        'access-control-allow-methods' : 'OPTIONS,HEAD,GET,POST,PUT,PATCH,DELETE',
+        'access-control-allow-headers' : 'Authorization,Content-Type,X-Amz-Date,X-Amz-Security-Token,X-Api-Key',
+        ...additionalHeaders,
+    };
+}
 
+// implementing ~jsend https://github.com/omniti-labs/jsend
 const getResponse = status => (statusCode, data) => {
     const body = {
         status,
@@ -10,9 +18,7 @@ const getResponse = status => (statusCode, data) => {
 
     return {
         statusCode: statusCode ,
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: getHeaders({ 'Content-Type': 'application/json'}),
         body: stringyfiedBody,
     }
 };
