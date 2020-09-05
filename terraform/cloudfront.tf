@@ -30,6 +30,7 @@ resource "aws_cloudfront_distribution" "building_mfe" {
 
     forwarded_values {
       query_string = true
+      headers      = ["Authorization"]
 
       cookies {
         forward = "none"
