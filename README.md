@@ -1,5 +1,7 @@
 # Building Micro Frontend API
 
+This repository contains the APIs for Manning's liveProject ["Building Micro Frontends with a Team-Based Vertical Architecture"](https://liveproject.manning.com/project/246/building-micro-frontends-with-a-team-based-vertical-architecture?).
+
 ## API
 
 List of available API
